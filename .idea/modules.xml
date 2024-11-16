@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/imageAutoClicker.iml" filepath="$PROJECT_DIR$/.idea/imageAutoClicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Click Routine.iml" filepath="$PROJECT_DIR$/.idea/Click Routine.iml" />
       <module fileurl="file://$PROJECT_DIR$/../todosExample/.idea/todosExample.iml" filepath="$PROJECT_DIR$/../todosExample/.idea/todosExample.iml" />
     </modules>
   </component>
