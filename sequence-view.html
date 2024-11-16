@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+
+        <style>
+            body {
+                font-family: Tahoma;
+                height: 100%;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-image: linear-gradient(to bottom, GhostWhite 20%, Gainsboro 90%);
+                margin-top: 30px;
+                margin-bottom: 100px;
+                margin-right: 60px;
+                margin-left: 60px;
+            }
+
+            #header {
+                display: grid;
+                grid-template-columns: minmax(20px, 1fr) auto minmax(20px, 1fr);
+                align-items: center;
+                text-align: center;
+                grid-gap: 10px;
+                width: 100%;
+            }
+
+            #header:before,
+            #header:after {
+                content: '';
+                border-top: 2px solid;
+            }
+
+            .column-seq {
+                box-sizing: border-box;
+                float: left;
+                width: 176px;
+                height: 176px;
+                padding: 0px;
+                margin: 8px;
+                margin-bottom: 20px;
+                word-wrap: break-word;
+                overflow: hidden;
+                transition: 1s linear all;
+            }
+
+            /* Clear floats after the columns */
+            .row-seq:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            .column-seq:hover {
+                transition-duration: 0.8s;
+                opacity: .5;
+            }
+
+            .input-button {
+                width: 100%;
+                height: 100%;
+                background-color: rgba(205,92,92 ,0.6);
+                border: none;
+                color: GhostWhite;
+                padding: 25px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 22px;
+                cursor: pointer;
+            }
+
+            button:hover:not(.input-button):hover {
+                box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+                cursor: pointer;
+            }
+
+            response-container {
+                display: none;
+                padding: 3rem;
+                margin: 3rem 5rem;
+                font-size: 120%;
+                border: 5px dashed #ccc;
+            }
+
+            label {
+                margin-left: 0.3rem;
+                margin-right: 0.3rem;
+            }
+            #overlay-action-edit {
+                position: fixed; /* Sit on top of the page content */
+                display: none; /* Hidden by default */
+                width: 100%; /* Full width (cover the whole page) */
+                height: 100%; /* Full height (cover the whole page) */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.8); /* Black background with opacity */
+                z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+            }
+
+            #overlay-input-menu {
+                position: fixed; /* Sit on top of the page content */
+                display: none; /* Hidden by default */
+                width: 100%; /* Full width (cover the whole page) */
+                height: 100%; /* Full height (cover the whole page) */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.8); /* Black background with opacity */
+                z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+            }
+
+            #overlay-text {
+                position: fixed; /* Sit on top of the page content */
+                display: none; /* Hidden by default */
+                width: 100%; /* Full width (cover the whole page) */
+                height: 100%; /* Full height (cover the whole page) */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.8); /* Black background with opacity */
+                z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+            }
+
+            #overlay-clear-confirm {
+                position: fixed; /* Sit on top of the page content */
+                display: none; /* Hidden by default */
+                width: 100%; /* Full width (cover the whole page) */
+                height: 100%; /* Full height (cover the whole page) */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.8); /* Black background with opacity */
+                z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+            }
+
+            #overlay-special {
+                position: fixed; /* Sit on top of the page content */
+                display: none; /* Hidden by default */
+                width: 100%; /* Full width (cover the whole page) */
+                height: 100%; /* Full height (cover the whole page) */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.8); /* Black background with opacity */
+                z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+            }
+
+            #overlay-message {
+                position: fixed; /* Sit on top of the page content */
+                display: none; /* Hidden by default */
+                width: 100%; /* Full width (cover the whole page) */
+                height: 100%; /* Full height (cover the whole page) */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.8); /* Black background with opacity */
+                z-index: 3; /* Specify a stack order in case you're using a different order for other elements */
+            }
+
+            .text-new-input{
+                position: absolute;
+                text-align: center;
+                line-height: 1.8;
+                top: 40%;
+                left: 50%;
+                font-size: 50px;
+                width: 90%;
+                color: white;
+                transform: translate(-50%,-50%);
+                -ms-transform: translate(-50%,-50%);
+            }
+
+            #input-capture-button {
+                background-image: url("assets/icons/cancelCapture.png");
+                background-repeat: no-repeat;
+                background-size: cover;
+                height: 180px;
+                width: 180px;
+                border-radius: 2px;
+                margin: 10px;
+                transition-duration: 0.2s;
+            }
+
+            #input-capture-button:hover {
+                box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+                cursor: pointer;
+            }
+
+            #input-text-button {
+                background-image: url("assets/icons/textInput.png");
+                background-repeat: no-repeat;
+                background-size: cover;
+                height: 180px;
+                width: 180px;
+                border-radius: 2px;
+                margin: 10px;
+                transition-duration: 0.2s;
+            }
+
+            #input-text-button:hover {
+                box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+                cursor: pointer;
+            }
+
+            #input-special-button {
+                background-image: url("assets/icons/specialInput.png");
+                background-repeat: no-repeat;
+                background-size: cover;
+                height: 180px;
+                width: 180px;
+                border-radius: 2px;
+                margin: 10px;
+                transition-duration: 0.2s;
+            }
+
+            #input-special-button:hover {
+                box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+                cursor: pointer;
+            }
+
+            #input-position-button {
+                background-image: url("assets/icons/positionClick.png");
+                background-repeat: no-repeat;
+                background-size: cover;
+                height: 180px;
+                width: 180px;
+                border-radius: 2px;
+                margin: 10px;
+                transition-duration: 0.2s;
+            }
+
+            #input-position-button:hover {
+                box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+                cursor: pointer;
+            }
+
+            .CancelInputButton {
+                background-color: rgba(200,200,0 ,0.8);
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                border-radius: 6px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                transition-duration: 0.4s;
+            }
+
+            .CancelInputButton:hover {
+                background-color: white;
+                color: black;
+                cursor: pointer; /* Add a pointer on hover */
+            }
+
+            .specialInputButton {
+                background-color: rgba(190, 126, 90, 0.8);
+                color: white;
+                padding: 16px 28px;
+                border-radius: 8px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                transition-duration: 0.4s;
+            }
+
+            .specialInputButton:hover {
+                background-color: white;
+                color: black;
+                cursor: pointer; /* Add a pointer on hover */
+            }
+
+            .deleteButton {
+                background-color: #f44336; /* Red */
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                border-radius: 6px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                transition-duration: 0.4s;
+            }
+
+            .deleteButton:hover {
+                background-color: white;
+                color: black;
+                cursor: pointer; /* Add a pointer on hover */
+            }
+
+            #ConfirmInputButton {
+                background-color: #4CAF50; /* Green */
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                border-radius: 6px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                transition-duration: 0.4s;
+            }
+
+            #ConfirmInputButton:hover {
+                background-color: white;
+                color: black;
+                cursor: pointer; /* Add a pointer on hover */
+            }
+
+            .text-under-new-input{
+                position: absolute;
+                text-align: center;
+                top: 74%;
+                left: 50%;
+                white-space: nowrap;
+                font-size: 25px;
+                color: white;
+                transform: translate(-50%,-50%);
+                -ms-transform: translate(-50%,-50%);
+            }
+
+            #textInputField {
+                height:40px;
+                width:600px;
+                font-size:16pt;
+            }
+
+            #specialSelectBox {
+                font-size: 18px;
+                color: #fff;
+                background-color: SlateGrey;
+            }
+
+            .menu-seq {
+                display: inline-block;
+                position: fixed;
+                bottom: 2vh;
+                width: 100%;
+                direction: rtl;
+                /*height: 5vh;*/
+            }
+
+            /* Clear floats after the columns */
+            .menu-seq:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            #leftMenuButton {
+                display: inline-block;
+                box-sizing: border-box;
+                width: 20%;
+                margin: 2%;
+                border: 1px solid black;
+                border-radius: 4px;
+                box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            #centerMenuButton {
+                display: inline-block;
+                height: 100%;
+                position: relative;
+                top: 14px;
+            }
+
+            #rightMenuButton {
+                display: inline-block;
+                box-sizing: border-box;
+                width: 20%;
+                margin: 2%;
+                margin-right: 31%;
+                border: 1px solid black;
+                border-radius: 4px;
+                box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .run-menu-button {
+                width: 100%;
+                padding: 6px;
+                background-color: rgba(20,179,0 ,0.8);
+                border: none;
+                color: GhostWhite;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 26px;
+                cursor: pointer;
+            }
+
+            .run-settings-button {
+                background: none;
+                background-image: url('assets/icons/gear-icon.png');
+                background-size: cover;
+                width: 50px;
+                height: 50px;
+                cursor: pointer;
+                display: inline-block;
+                padding: 0;
+                border: none;
+            }
+
+            .clear-menu-button {
+                width: 100%;
+                padding: 6px;
+                background-color: rgba(200,200,0 ,0.8);
+                border: none;
+                color: GhostWhite;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 26px;
+                cursor: pointer;
+            }
+
+            .moveArrow {
+                background-color: rgba(200,140,0 ,1);
+                border: none;
+                color: white;
+                padding: 12px 18px;
+                border-radius: 6px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 20px;
+                transition-duration: 0.4s;
+            }
+
+            .moveArrow:hover {
+                background-color: white;
+                color: black;
+                cursor: pointer; /* Add a pointer on hover */
+            }
+
+            .defaultTextField {
+                height:40px;
+                width:100px;
+                font-size:16pt;
+            }
+
+            .jumpTextField {
+                height:40px;
+                width:100px;
+                font-size:16pt;
+                background-color: antiquewhite;
+            }
+
+            .edit-action-menu{
+                position: absolute;
+                text-align: left;
+                line-height:50px;
+                top: 46%;
+                left: 50%;
+                font-size: 30px;
+                color: white;
+                transform: translate(-50%,-50%);
+                -ms-transform: translate(-50%,-50%);
+            }
+
+            #editingModeDisplayId{
+                /*text-align: center;*/
+                font-size: 40px;
+                padding: 20px;
+                padding-left: 0px;
+            }
+
+            #hidden-edit-text-button {
+                display: none; /* hidden by default */
+                background-color: rgba(130,110,0 ,0.8);
+                border: none;
+                color: white;
+                margin: 10px;
+                margin-left: 0px;
+                padding: 15px 32px;
+                width: 336px;
+                border-radius: 6px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                transition-duration: 0.4s;
+            }
+            #hidden-edit-text-button:hover {
+                background-color: white;
+                color: black;
+                cursor: pointer; /* Add a pointer on hover */
+            }
+
+            #hidden-edit-text-confirm-button {
+                background-color: #4CAF50; /* Green */
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                border-radius: 6px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                display: none; /* Hidden by default */
+                font-size: 16px;
+                transition-duration: 0.4s;
+            }
+            #hidden-edit-text-confirm-button:hover {
+                background-color: white;
+                color: black;
+                cursor: pointer; /* Add a pointer on hover */
+            }
+
+            .actionHighlight {
+                background-color: Black;
+                color: White;
+                /*border-style: solid;*/
+                opacity: 0.3;
+                Z-index: 5;
+                transition: none;
+            }
+
+            #overlay-global-seq-settings {
+                position: fixed; /* Sit on top of the page content */
+                display: none; /* Hidden by default */
+                width: 100%; /* Full width (cover the whole page) */
+                height: 100%; /* Full height (cover the whole page) */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.8); /* Black background with opacity */
+                z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+            }
+
+            .menuTitleText{
+                /*text-align: center;*/
+                font-size: 40px;
+                padding: 30px;
+                padding-left: 0px;
+                margin-bottom: 15px;
+            }
+
+            .clickboxes{
+                -ms-transform: scale(2); /* IE */
+                transform: scale(2);
+                padding: 10px;
+                position: relative;
+                top: -4px;
+            }
+
+            #hidy-clickboxes{
+                display: none; /* hidden by default */
+            }
+            #adjustClickbox{
+                position: relative;
+                top: -10px;
+            }
+            #hidy-br{
+                display: block; /* hidden by default */
+            }
+
+            .jumpColorise{
+                font-size: 85%;
+                color: #eff5b8 !important;
+            }
+
+            #only-captureSettings{
+                display: none; /* hidden by default */
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div id="overlay-action-edit">
+            <div class="edit-action-menu">
+                <div id="editingModeDisplayId">Position: </div>
+                <input type="button" class="moveArrow" onclick="moveAction(document.getElementById('editingModeDisplayId').innerHTML, 'left', 1)" value="<">
+                <input type="button" class="moveArrow" onclick="moveAction(document.getElementById('editingModeDisplayId').innerHTML, 'right', 1)" value=">"> Move position<br>
+                <input type="text" class="defaultTextField" id="delayTime" required="required" title="Time which will be waited after this event has been performed" pattern="\d{1,5}\.?\d{0,5}"> Wait time (seconds)<br>
+                <div id="hidy-br">
+                    <br>
+                </div>
+                <div id="hidy-captureSettings">
+                    <input type="text" class="defaultTextField" id="confidenceSelectBox" required="required" pattern="^(?:1(?:\.0)?|0?\.[1-9]|0?\.[1-9][0-9]|null)$" title="Enter a value between 0.1 and 1.0, max 2 decimals. The lower the value, the less precise the image matching will be"> Confidence<br>
+                    <input type="text" class="jumpTextField" id="moveToPositionSuccess" required="required" title="Type a position number which will directly run if condition is met">
+                    <a class="jumpColorise">Go to position, if match is found</a><br>
+                    <input type="text" class="jumpTextField" id="moveToPositionFail" required="required" title="Type a position number which will directly run if condition is met">
+                    <a class="jumpColorise">Go to position, if match is not found</a><br>
+                    <input type="text" class="defaultTextField" id="adjustX" required="required" title="E.g. 30 here will make the program click 30 pixels to the right of capture. -30 will click 30 pixels to the left of capture.">
+                    <a>Adjust click horizontally (pixels)</a><br>
+                    <input type="text" class="defaultTextField" id="adjustY" required="required" title="E.g. 30 here will make the program click 30 pixels to the bottom of capture. -30 will click 30 pixels to the top of capture.">
+                    <a>Adjust click vertically (pixels)</a><br>
+                    <br>
+                </div>
+
+                <div id="hidy-clickboxes">
+                    <input type="checkbox" id="singleclick" name="multiclick" class="clickboxes adjustClickbox" onClick="modifyJsonValue(document.getElementById('editingModeDisplayId').innerHTML, 'multiclick', 'singleclick')">
+                    <label for="singleclick">Single Click</label> &nbsp;
+                    <input type="checkbox" id="doubleclick" name="multiclick" class="clickboxes adjustClickbox" onClick="modifyJsonValue(document.getElementById('editingModeDisplayId').innerHTML, 'multiclick', 'doubleclick')">
+                    <label for="doubleclick">Double Click</label> <br>
+                    <input type="checkbox" id="tripleclick" name="multiclick" class="clickboxes adjustClickbox" onClick="modifyJsonValue(document.getElementById('editingModeDisplayId').innerHTML, 'multiclick', 'tripleclick')">
+                    <label for="tripleclick">Triple Click</label> &nbsp;
+                    <input type="checkbox" id="noclick" name="multiclick" class="clickboxes adjustClickbox" onClick="modifyJsonValue(document.getElementById('editingModeDisplayId').innerHTML, 'multiclick', 'noclick')">
+                    <label for="noclick">Don't Click</label> <br>
+                </div>
+
+                <div class = "editActionButtonFrame">
+                    <input type="button" class="CancelInputButton" value="Test" onclick="testAction(document.getElementById('editingModeDisplayId').innerHTML); cancelInputNewSeq()">
+                    <input type="button" class="deleteButton" value="Delete" onclick="deleteAction(document.getElementById('editingModeDisplayId').innerHTML); cancelInputNewSeq()">
+                    <input type="button" class="CancelInputButton" value="Accept" onclick="multiJsonEdit(document.getElementById('editingModeDisplayId').innerHTML,
+                                                                                        ['moveToPositionSuccess', 'moveToPositionFail', 'wait', 'confidence', 'adjustX', 'adjustY'],
+                                                                                        [document.getElementById('moveToPositionSuccess').value, document.getElementById('moveToPositionFail').value, document.getElementById('delayTime').value, document.getElementById('confidenceSelectBox').value, document.getElementById('adjustX').value, document.getElementById('adjustY').value]);
+                                                                                        cancelInputNewSeq()">
+                    <input type="button" id="hidden-edit-text-button" value="Edit Text" onclick="editTextView(document.getElementById('editingModeDisplayId').innerHTML);">
+                </div>
+            </div>
+        </div>
+
+        <div id="overlay-input-menu">
+            <div class="text-new-input">Choose input type:<br>
+                <input type="button" id="input-capture-button" onclick="newCaptureClick()">
+                <input type="button" id="input-text-button" onclick="inputTextView()">
+                <input type="button" id="input-special-button" onclick="inputSpecialView()">
+                <input type="button" id="input-position-button" onclick="newPositionClick()"><br>
+                <div class="text-under-new-input"><br>
+                    <span style="margin-left: 0px;">Capture</span>
+                    <span style="margin-left: 135px;">Text</span>
+                    <span style="margin-left: 145px;">Special</span>
+                    <span style="margin-left: 130px;">Position</span>
+                </div>
+                <input type="button" class="CancelInputButton" value="Cancel" onclick="cancelInputNewSeq()">
+            </div>
+        </div>
+
+
+        <div id="overlay-message">
+            <div id="alertMessageOverlay" class="text-new-input">
+                <div id="messageAlert">Message</div>
+                <input type="button" class="CancelInputButton" value="Ok" onclick="cancelOverlayMessage()">
+            </div>
+        </div>
+
+        <div id="overlay-text">
+            <div class="text-new-input">Text:<br>
+                <input type="text" id="textInputField" name="nameInput" required="required" pattern="[^\\\x22]{0,300}"><br>
+                <input type="button" id="hidden-edit-text-confirm-button" value="Confirm edit" onclick="modifyJsonValue(document.getElementById('editingModeDisplayId').innerHTML, 'content', document.getElementById('textInputField').value)">
+                <input type="button" id="ConfirmInputButton" value="Confirm" onclick="confirmInputText();">
+                <input type="button" class="CancelInputButton" value="Cancel" onclick="cancelInputNewSeq()">
+            </div>
+        </div>
+
+        <div id="overlay-clear-confirm">
+            <div class="text-new-input">Are you sure you want to clear the sequence?<br>
+                <input type="button" class="CancelInputButton" value="Confirm" onclick="clearSeq()">
+                <input type="button" class="deleteButton" value="Cancel" onclick="cancelInputNewSeq()">
+            </div>
+        </div>
+
+        <div id="overlay-special">
+            <div class="text-new-input">Special key press:<br>
+                <input type="button" class="specialInputButton" value="Enter" onclick="confirmInputSpecial('enter')">
+                <input type="button" class="specialInputButton" value="Backspace" onclick="confirmInputSpecial('backspace')">
+                <input type="button" class="specialInputButton" value="Esc" onclick="confirmInputSpecial('esc')">
+                <input type="button" class="specialInputButton" value="Win" onclick="confirmInputSpecial('win')">
+                <input type="button" class="specialInputButton" value="Shift" onclick="confirmInputSpecial('shift')">
+                <input type="button" class="specialInputButton" value="Tab" onclick="confirmInputSpecial('tab')">
+                <input type="button" class="specialInputButton" value="Home" onclick="confirmInputSpecial('home')"><br>
+                <input type="button" class="specialInputButton" value="Delete" onclick="confirmInputSpecial('delete')">
+                <input type="button" class="specialInputButton" value="Ctrl + C" onclick="confirmInputSpecial('ctrl+C')">
+                <input type="button" class="specialInputButton" value="Ctrl + V" onclick="confirmInputSpecial('ctrl+V')">
+                <input type="button" class="specialInputButton" value="Ctrl + A" onclick="confirmInputSpecial('ctrl+A')">
+                <input type="button" class="specialInputButton" value="Ctrl + S" onclick="confirmInputSpecial('ctrl+S')">
+                <input type="button" class="specialInputButton" value="Ctrl + End" onclick="confirmInputSpecial('ctrl+end')">
+                <input type="button" class="specialInputButton" value="Alt + F4" onclick="confirmInputSpecial('alt+F4')"><br>
+                <input type="button" class="specialInputButton" value="Ctrl + F" onclick="confirmInputSpecial('ctrl+F')">
+                <input type="button" class="specialInputButton" value="Shift + End" onclick="confirmInputSpecial('shift+end')">
+                <input type="button" class="specialInputButton" value="Left" onclick="confirmInputSpecial('left')">
+                <input type="button" class="specialInputButton" value="Right" onclick="confirmInputSpecial('right')">
+                <input type="button" class="specialInputButton" value="Up" onclick="confirmInputSpecial('up')">
+                <input type="button" class="specialInputButton" value="Down" onclick="confirmInputSpecial('down')"><br>
+                <input type="button" class="specialInputButton" value="Store 1" onclick="confirmInputSpecial('store1')">
+                <input type="button" class="specialInputButton" value="Store 2" onclick="confirmInputSpecial('store2')">
+                <input type="button" class="specialInputButton" value="Store 3" onclick="confirmInputSpecial('store3')">
+                <input type="button" class="specialInputButton" value="Paste 1" onclick="confirmInputSpecial('paste1')">
+                <input type="button" class="specialInputButton" value="Paste 2" onclick="confirmInputSpecial('paste2')">
+                <input type="button" class="specialInputButton" value="Paste 3" onclick="confirmInputSpecial('paste3')"><br>
+                <input type="button" class="CancelInputButton" value="Cancel" onclick="cancelInputNewSeq()">
+            </div>
+        </div>
+
+        <div id="overlay-global-seq-settings">
+            <div class="edit-action-menu">
+                <div class="menuTitleText">Sequence settings</div>
+                <input type="text" class="defaultTextField" id="cpsSpeedField" required="required" pattern="^[1-9]\d*$" title="Enter a CPS (Characters Per Second) speed"> Typing speed<br>
+                <input type="text" class="defaultTextField" id="seqTimeout" required="required" pattern="$|[0-9]{0,10}|null" title="Time in seconds before this sequence will automatically shutdown"> Automatic timeout (seconds)<br><br>
+                <div class = "editActionButtonFrame">
+                    <input type="button" class="CancelInputButton" value="Accept" onclick="modifyJsonValue('', 'typingspeed', document.getElementById('cpsSpeedField').value);
+                                                                                        modifyJsonValue('', 'seqtimeout', document.getElementById('seqTimeout').value);cancelInputNewSeq()">
+                    <input type="button" class="deleteButton" value="Cancel" onclick="cancelInputNewSeq()">
+                </div>
+            </div>
+        </div>
+
+        <h1 id="header">Loading Sequence ...</h1>
+
+        <div class="row-seq" id="seqGroup">
+            <div class="column-seq" id="newInputButton" style="background-color:#bbb; border: 1px solid black;">
+                <button onClick="newInputButtonPress()" class="input-button">New input</button>
+            </div>
+        </div>
+
+        <div id="debugId"></div>
+
+        <div class="menu-seq">
+            <div id="rightMenuButton">
+                <button onClick="openClearConfirmWindow()" class="clear-menu-button">Clear</button>
+            </div>
+            <div id="centerMenuButton">
+                <button onClick="pywebview.api.getJsonLoaded().then(seqSettingsClick);" class="run-settings-button"></button>
+            </div>
+            <div id="leftMenuButton">
+                <button onClick="runSeq()" class="run-menu-button">Test run</button>
+            </div>
+        </div>
+
+        <script src="sequence-control.js"></script>
+
+    </body>
+</html>

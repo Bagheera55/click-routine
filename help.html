@@ -1,0 +1,65 @@
+<html>
+<body>
+ <head>
+  <meta charset="UTF-8">
+</head> 
+<h2>What is this?</h2>
+This program lets the user create different types of automation tasks called "sequences". Sequences can be chained together and trigger each other based on if the run was successful or not.<br>
+The purpose here is to create a human like automation behavior, where the program will scan the screen for user specified images, and type/button press like a human would, but only a little faster.<br>
+<h3>Main menu</h3>
+Each sequence can be enabled or disabled in the menu, disabling a sequence here also prevents it from being triggered in the outcome of another sequence.<br>
+To start running a sequence, you can choose between a time loop trigger or a button trigger. The time loop will run as often as is specified in seconds, useful in events which needs to be always repeated. <br>
+The button trigger lets you run a sequence by pressing the chosen button combination. As long as this program is running, it is always in the background listening for these key press combinations. <br>
+<br>
+In order to chain sequences together, the "Outcome" option can be used. This will let you specify if you want to trigger the next sequence based on failure to complete the previous sequence, <br>
+or based on a successful previous run. You need to specify the name of the next sequence to run by typing it manually. It is key sensitive, mistyping a sequence name will cause nothing to happen.<br>
+
+<h3>Sequence menu</h3>
+You can access the sequence menu by creating a new sequence or by clicking the name of the sequence in the main menu.<br>
+Here you can build up your sequence by chaining together action events, these actions can be created using the "New input" button. <br>
+There are four different actions: "Capture", "Text", "Special" or "Position": <br>
+
+<h4>Capture</h4>
+In this action, you will be prompted to select a screen area of which its center position will be the click target. The entire selected area will be used by the program when it is searching your screen.<br>
+You can lower the accuracy of the screen search by lowering the confidence value in the action menu. This can be necessary if the searched image can vary slightly in colors and opacity. <br>
+Warning, too low of a confidence value might result in miss clicks in undesired locations.<br>
+
+<h4>Text</h4>
+What you type here is the exact key presses which will be typed by the program. You can adjust the typing speed by clicking on the cogwheel at the bottom of the screen in the sequence menu. <br>
+
+<h4>Special</h4>
+Here you can find key presses of different buttons and a few common combinations of key presses.<br>
+Tips:<br>
+Ctrl + C and Ctrl + V, These are quite obvious. Use this to copy and paste text and data. <br>
+Ctrl + A, use this to select an entire text area or for example the entire webpage content. <br>
+Ctrl + S, this is commonly used to save in programs. <br>
+Ctrl + End, this will let you move to the end of a text area. <br>
+Alt + F4, this will close the program of which you are interacting with. <br>
+
+<h4>Position</h4>
+With this action, you can let the program click on a static position of your choice. Useful for situations where a button or location is always at the same place.<br>
+
+<h3>Editing actions</h3>
+You can click on any created action and a new menu will appear. Depending on the action type, there will be different options here.<br>
+Position is shown at the top. This can be changed by clicking on the arrows to move either left or right. <br>
+"Wait time" is the time in seconds before the next action triggers. Visually, this is displayed in the arrow next to the action, both the arrow and the action will open the same editing menu.<br>
+"Confidence" is adjustable on capture actions, lowering this will lower the accuracy in the search algorithm, which might be necessary if the searched image can vary slightly in colors and opacity.<br>
+"Jump to position" with this option you can create simple logic within the same sequence. If the searched image is found or not, you can have the program directly move to the position of choice, ignoring position order.<br>
+<br>
+From the editing menu, you can also trigger a test of the current action. Results will be displayed on the screen. This can be useful for debugging purposes.
+
+<h3>Bottom menu</h3>
+At the bottom of the screen in the sequence menu you will find a cog wheel, here you can adjust the typing speed of the text action, and the automatic timeout before the sequence terminates in case of a loop.<br>
+The "Test run" button will run the current sequence and display the results of the entire run. Can be useful for debugging purposes.<br>
+The "Clear" button will delete all actions in the sequence, so you can start over.<br>
+
+<h3>Import/Export Sequence</h3>
+By exporting a sequence, you can save your creation to an eseq (exported-sequence) file. This is a zipped catalog containing all your image captures and a seq file (contains all logic). <br>
+Each sequence must be exported one by one. Importing can be done with multiple eseq files at the same time.<br>
+
+<h3>Fail-safe</h3>
+In case something goes really wrong while running a sequence, you can quickly move your mouse to a corner of your screen. This will stop the program.<br>
+This can be disabled with the "-nofailsafe" input argument for the program's exe file, by doing the following:<br>
+Create a shortcut to Click Routine, in the shortcuts "Target" field, add  <b>-nofailsafe</b> in the end.<br>
+</body>
+</html>

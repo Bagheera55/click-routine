@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+
+        <style>
+            #response-container {
+                display: none;
+                padding: 3rem;
+                margin: 3rem 5rem;
+                font-size: 120%;
+                border: 5px dashed #ccc;
+            }
+
+            label {
+                margin-left: 0.3rem;
+                margin-right: 0.3rem;
+            }
+
+            button {
+                font-size: 100%;
+                padding: 0.5rem;
+                margin: 0.3rem;
+                text-transform: uppercase;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <h1>JS API Example</h1>
+
+        <p id='pywebview-status'><i>pywebview</i> is not ready</p>
+
+        <button onClick="initialize()">Hello Python</button><br/>
+        <button id="heavy-stuff-btn" onClick="doHeavyStuff()">Perform a heavy operation</button><br/>
+        <button onClick="getRandomNumber()">Get a random number</button><br/>
+        <label for="name_input">Say hello to:</label><input id="name_input" placeholder="put a name here">
+        <button onClick="greet()">Greet</button><br/>
+        <label for="number_input">Perform quick maths:</label><input id="number_input" placeholder="put a number here">
+        <button onClick="quickMaths()">Maths</button><br/>
+        <button onClick="catchException()">Catch Exception</button><br/>
+        <button onClick="startCapture()">Capture Image</button><br/>
+
+        <div id="response-container"></div>
+        <div id="capture-container"></div>
+
+        <script src="flow-control.js"></script>
+
+    </body>
+</html>

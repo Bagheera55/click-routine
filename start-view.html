@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+
+        <style>
+            body {
+                /*font-family: Trebuchet MS;*/
+                font-family: Tahoma;
+
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-image: linear-gradient(to bottom, GhostWhite 20%, Gainsboro 90%);
+                margin-top: 0px;
+                margin-bottom: 0px;
+                margin-right: 10px;
+                margin-left: 10px;
+            }
+
+            #header {
+                display: grid;
+                grid-template-columns: minmax(20px, 1fr) auto minmax(20px, 1fr);
+                align-items: center;
+                text-align: center;
+                grid-gap: 20px;
+                width: 100%;
+            }
+
+            #header:before,
+            #header:after {
+                content: '';
+                border-top: 2px solid;
+            }
+
+            .columnLeft {
+                box-sizing: border-box;
+                float: left;
+                width: 17%;
+                height: 7vh;
+                margin: 1.5%;
+                margin-top: 5px;
+                margin-bottom: 5px;
+                border: 1px solid black;
+                border-radius: 2px;
+                box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .columnLeft:hover {
+                transform: scale(1.1);
+                transition-duration: 0.2s;
+            }
+
+            .input-button {
+                font-family: Tahoma;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 10, 60, 0.15);
+                border: none;
+                color: black;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 19px;
+                cursor: pointer;
+                transition-duration: 0.2s;
+            }
+
+            button:hover {
+                color: GhostWhite;
+                box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+            }
+
+            .loaded-seq {
+                display: table;
+                height: 73vh;
+
+                width: 98%;
+                margin: 1%;
+                margin-top: 2%;
+                align: center;
+                background-color: rgba(0, 70, 10, 0.1);
+                border: 1px solid black;
+                border-radius: 2px;
+                box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            table {
+                width: 100%;
+                table-layout: fixed;
+                overflow:hidden;
+            }
+
+            th, td {
+                text-align: center;
+                padding: 4px;
+                border-radius: 6px;
+            }
+
+            table tbody tr {
+                background-color: rgba(0, 0, 0, 0.05);
+                border-radius: 6px;
+            }
+            table tbody td:hover {
+                background-color: rgba(0, 0, 0, 0.15);
+                border-radius: 6px;
+            }
+
+            /* Clear floats after the columns */
+            .row-seq:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            .column-seq:hover {
+                box-shadow: inset 0 0 0 1000px rgba(0,0,0,.2);
+            }
+
+            .overlay {
+                position: fixed; /* Sit on top of the page content */
+                display: none; /* Hidden by default */
+                width: 100%; /* Full width (cover the whole page) */
+                height: 100%; /* Full height (cover the whole page) */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.7); /* Black background with opacity */
+                z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+            }
+
+            .overlay-alert {
+                position: fixed; /* Sit on top of the page content */
+                display: none; /* Hidden by default */
+                width: 100%; /* Full width (cover the whole page) */
+                height: 100%; /* Full height (cover the whole page) */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.8); /* Black background with opacity */
+                z-index: 3; /* Specify a stack order in case you're using a different order for other elements */
+            }
+
+            #text-new-input{
+                position: absolute;
+                top: 40%;
+                left: 50%;
+                font-size: 50px;
+                color: white;
+                transform: translate(-50%,-50%);
+                -ms-transform: translate(-50%,-50%);
+            }
+            .text-alert-message{
+                text-align: center;
+                position: absolute;
+                top: 44%;
+                left: 50%;
+                font-size: 30px;
+                color: white;
+                transform: translate(-50%,-50%);
+                -ms-transform: translate(-50%,-50%);
+            }
+
+            #seqNameInputField {
+                height:40px;
+                width:400px;
+                font-size:16pt;
+            }
+
+            #ConfirmInputButton {
+                background-color: #4CAF50; /* Green */
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                border-radius: 6px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                transition-duration: 0.4s;
+            }
+
+            #ConfirmInputButton:hover {
+                background-color: white;
+                color: black;
+                cursor: pointer; /* Add a pointer on hover */
+            }
+
+
+            h2 {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .CancelInputButton {
+                background-color: rgba(200,60,0 ,0.8);
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                border-radius: 6px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                transition-duration: 0.4s;
+            }
+            .CancelInputButton:hover {
+                background-color: white;
+                color: black;
+                cursor: pointer; /* Add a pointer on hover */
+            }
+
+            .AcceptButton {
+                background-color: rgba(13,199,0 ,0.5);
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                border-radius: 6px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                transition-duration: 0.4s;
+            }
+            .AcceptButton:hover {
+                background-color: white;
+                color: black;
+                cursor: pointer; /* Add a pointer on hover */
+            }
+
+            .specialInputButton {
+                background-color: rgba(100, 200, 100, 0.8);
+                color: white;
+                padding: 20px 38px;
+                border-radius: 4px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 20px;
+                transition-duration: 0.4s;
+            }
+            .specialInputButton:hover {
+                background-color: white;
+                color: black;
+                cursor: pointer; /* Add a pointer on hover */
+            }
+
+            .text-new-input{
+                position: absolute;
+                text-align: center;
+                line-height: 1.8;
+                top: 40%;
+                left: 50%;
+                font-size: 40px;
+                width: 90%;
+                color: white;
+                transform: translate(-50%,-50%);
+                -ms-transform: translate(-50%,-50%);
+            }
+
+            .defaultTextField {
+                height:40px;
+                width:100px;
+                font-size:16pt;
+            }
+
+            #textInputField {
+                height:40px;
+                width:600px;
+                font-size:16pt;
+            }
+
+            .table-top:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            #tableHeadlinerTitle {
+                float: left;
+            }
+            #tableHeadlinerDelete {
+                float: right;
+                margin-right: 20px;
+                margin-top: 15px;
+                margin-bottom: 0px;
+                font-family: Tahoma;
+                width: 10%;
+                height: 100%;
+                background-color: rgba(0, 10, 60, 0.08);
+                color: black;
+                border: none;
+                text-align: center;
+                display: inline-block;
+                font-size: 19px;
+                cursor: pointer;
+                transition-duration: 0.2s;
+                border: 1px solid black;
+                border-radius: 2px;
+            }
+            #tableHeadlinerRefresh {
+                float: right;
+                margin-right: 20px;
+                margin-top: 15px;
+                margin-bottom: 0px;
+                font-family: Tahoma;
+                width: 10%;
+                height: 100%;
+                background-color: rgba(0, 10, 60, 0.08);
+                color: black;
+                border: none;
+                text-align: center;
+                display: inline-block;
+                font-size: 19px;
+                cursor: pointer;
+                transition-duration: 0.2s;
+                border: 1px solid black;
+                border-radius: 2px;
+            }
+
+            .delSeqTable {
+                text-align: center;
+                font-size: 20px;
+            }
+            .menuSeqTableBody {
+                background-color: rgba(143, 155, 214, 0.6);
+            }
+
+            .del-Table-Text {
+                position: absolute;
+                text-align: center;
+                line-height: 2;
+                top: 40%;
+                left: 50%;
+                font-size: 30px;
+                width: 39%;
+                color: white;
+                transform: translate(-50%,-50%);
+                -ms-transform: translate(-50%,-50%);
+            }
+
+            .clickboxes{
+                -ms-transform: scale(2); /* IE */
+                transform: scale(2);
+                padding: 10px;
+                position: relative;
+                top: -2px;
+            }
+
+            .splash-style {
+                position: fixed; /* Sit on top of the page content */
+                visibility: visible;
+                width: 100%; /* Full width (cover the whole page) */
+                height: 100%; /* Full height (cover the whole page) */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0,0,0,0.95); /* Black background with opacity */
+                z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+                opacity: 1;
+            }
+
+            footer {
+                text-align: right;
+                font-family: Tahoma;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div class="splash-style" id="splash-screen">
+            <div class="text-new-input">
+                Developed by: <br>
+                Andreas Brännback<br>
+                info@routineprograms.com<br>
+            </div>
+        </div>
+
+        <h2 id="header">Menu</h2>
+
+        <div class="overlay" id="overlay">
+            <div id="text-new-input">Sequence name:<br>
+                <input type="text" id="seqNameInputField" name="nameInput" required="required" pattern="[A-z0-9À-ž\-_ ]{0,30}"><br>
+                <input type="button" id="ConfirmInputButton" value="Confirm" onclick="confirmInputNewSeq()">
+                <input type="button" class="CancelInputButton" value="Cancel" onclick="cancelEdit()">
+            </div>
+        </div>
+
+        <div class="overlay" id="overlay-delete">
+            <div class="del-Table-Text">Click on a sequence to delete<br>
+                <table class="delSeqTable">
+                    <tbody id="delSeqTableBody" class="menuSeqTableBody">
+                    </tbody>
+                </table>
+                <input type="button" class="CancelInputButton" value="Cancel" onclick="cancelEdit()">
+            </div>
+        </div>
+
+        <div class="overlay" id="overlay-export">
+            <div class="del-Table-Text">Click on a sequence to export<br>
+                <table class="delSeqTable">
+                    <tbody id="exportSeqTableBody" class="menuSeqTableBody">
+                    </tbody>
+                </table>
+                <input type="button" class="CancelInputButton" value="Cancel" onclick="cancelEdit()">
+            </div>
+        </div>
+
+        <div class="row-seq" id="seqGroup">
+            <div class="columnLeft" id="newSequenceButton">
+                <button onClick="inputNewSeq()" class="input-button">New Sequence</button>
+            </div>
+            <div class="columnLeft" id="importSequenceButton">
+                <button onClick="importSequence()" class="input-button">Import Sequence</button>
+            </div>
+            <div class="columnLeft" id="exportButton">
+                <button onClick="exportSeqMenu()" class="input-button">Export Sequence</button>
+            </div>
+            <div class="columnLeft" id="helpButton">
+                <button onClick="openHelp()" class="input-button">Help</button>
+            </div>
+            <div class="columnLeft" id="creditsButton">
+                <button onClick="openCredits()" class="input-button">Credits</button>
+            </div>
+        </div>
+
+
+        <div class="loaded-seq" id="loadedGroup">
+            <div class="table-top">
+                <h2 id="tableHeadlinerTitle">&ensp;Sequence table</h2>
+                <button id="tableHeadlinerDelete" onClick="deleteSeqMenu()" title="Select sequences to delete">Delete</button>
+                <button id="tableHeadlinerRefresh" onClick="manRefreshSeqMenu()" title="Refresh sequences">Refresh</button>
+            </div>
+            <hr>
+            <table id="allSeqTable">
+                <thead id="allSeqTableHead">
+                    <tr>
+                        <th>Name </th>
+                        <th>Enabled</th>
+                        <th>Trigger</th>
+                        <th>Outcome</th>
+                    </tr>
+                </thead>
+                <tbody id="allSeqTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <footer>
+            <b>Version 1.03 &nbsp;&nbsp;</b>
+        </footer>
+
+        <div class="overlay" id="overlay-trigger-chose">
+            <div class="text-new-input">Select trigger type:<br>
+                <input type="button" class="specialInputButton" value="Time loop" onclick="initTimeTriggerInput()">
+                <input type="button" class="specialInputButton" value="Button input" onclick="initButtonTriggerInput()"><br>
+                <input type="button" class="AcceptButton" value="Cancel" onclick="cancelEdit()">
+                <input type="button" class="CancelInputButton" value="Delete" onclick="modifyJsonValue('none', 'trigger-delete', 'none')">
+            </div>
+        </div>
+        <div class="overlay" id="overlay-outcome-chose">
+            <div class="text-new-input">If sequence completed:<br>
+                <input type="button" class="specialInputButton" value="Successfully" onclick="initOutcomeSuccess()">
+                <input type="button" class="specialInputButton" value="Unsuccessfully" onclick="initOutcomeUnsuccess()"><br>
+                <input type="button" class="AcceptButton" value="Cancel" onclick="cancelEdit()">
+                <input type="button" class="CancelInputButton" value="Delete" onclick="modifyJsonValue('none', 'outcome-delete', 'none')">
+            </div>
+        </div>
+        <div class="overlay" id="overlay-trigger-time">
+            <div class="text-new-input">Run every:<br>
+                <input type="text" class="defaultTextField" id="loopTime" required="required" pattern="\d{1,5}?\d{0,5}"> <span style="font-size: 32px">Seconds</span><br>
+                <input type="button" class="AcceptButton" value="Accept" onclick="modifyJsonValue('none','trigger-time', document.getElementById('loopTime').value); cancelEdit();">
+                <input type="button" class="CancelInputButton" value="Cancel" onclick="cancelEdit()">
+            </div>
+        </div>
+        <div class="overlay" id="overlay-outcome-runseq">
+            <div class="text-new-input">Then, run sequence:<br>
+                <input type="text" title="Fill in the name of the sequence to run" id="textInputField" name="nameInput" required="required" pattern="[A-z0-9À-ž\-_ ]{0,30}"><br>
+                <input type="button" id="outcomeSuccessAccept" class="AcceptButton" value="Accept" onclick="modifyJsonValue('none','outcome-run-seq-success', document.getElementById('textInputField').value); cancelEdit();">
+                <input type="button" id="outcomeUnsuccessAccept" class="AcceptButton" value="Accept" onclick="modifyJsonValue('none','outcome-run-seq-unsuccess', document.getElementById('textInputField').value); cancelEdit();">
+                <input type="button" class="CancelInputButton" value="Cancel" onclick="cancelEdit()">
+            </div>
+        </div>
+        <div class="overlay" id="overlay-trigger-button">
+            <div class="text-new-input">Button trigger:<br>
+                <input type="button" class="specialInputButton" value="Ctrl + Q" onclick="modifyJsonValue('none', 'trigger-button', 'Ctrl + Q'); cancelEdit()">
+                <input type="button" class="specialInputButton" value="Ctrl + Z" onclick="modifyJsonValue('none', 'trigger-button', 'Ctrl + Z'); cancelEdit()">
+                <input type="button" class="specialInputButton" value="Ctrl + D" onclick="modifyJsonValue('none', 'trigger-button', 'Ctrl + D'); cancelEdit()"><br>
+                <input type="button" class="specialInputButton" value="Alt + A" onclick="modifyJsonValue('none', 'trigger-button', 'Alt + A'); cancelEdit()">
+                <input type="button" class="specialInputButton" value="Alt + Z" onclick="modifyJsonValue('none', 'trigger-button', 'Alt + Z'); cancelEdit()">
+                <input type="button" class="specialInputButton" value="Alt + X" onclick="modifyJsonValue('none', 'trigger-button', 'Alt + X'); cancelEdit()"><br>
+                <input type="button" class="CancelInputButton" value="Cancel" onclick="cancelEdit()">
+            </div>
+        </div>
+        <div class="overlay-alert" id="overlay-message">
+            <div id="alertMessageOverlay" class="text-alert-message">
+                <div id="messageAlert">Message</div>
+                <input type="button" class="CancelInputButton" value="Ok" onclick="cancelAlert()">
+            </div>
+        </div>
+
+
+        <script src="start-control.js"></script>
+    </body>
+</html>
