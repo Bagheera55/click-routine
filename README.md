@@ -15,5 +15,9 @@ Another reason was to give non technical users powerful capabilities to easily c
 
 The code is sadly a bit messy to read, could be improved by using some refractoring and modularization. But the application is fully working and reliable.
 
+An installer is avaliable on https://routineprograms.com but if you want to build the exe yourself, then do as follow:
+Go to the venv, type: _pyinstaller main.py --noconsole --name "Click Routine" --icon="ClickRoutine.ico"_
+Manually copy: "assets" and all html+js files to output "dist" folder
+Ta-da... Run the program via the newly created exe
 
 
