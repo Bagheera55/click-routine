@@ -1,4 +1,5 @@
-""" Click Routine 2022-12-04
+""" Click Routine 2022-12-04 
+Andreas Brannback
 
 This program lets the user create different types of automation tasks called "sequences". Sequences can be chained together and trigger each other based on if the run was successful or not.
 The purpose here is to create a human like automation behavior, where the program will scan the screen for user specified images, and type/button press like a human would, but only a little faster.
